@@ -1,0 +1,41 @@
+version: "3.5"
+services:
+  db:
+    image: mysql:5.7
+    volumes: 
+      - ./db-data:/var/lib/mysql
+    networks:
+      wpnet:
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=wordpress
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=wordpressdb
+  
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress
+    volumes:
+      - ./wp-data:/var/www/html
+    networks:
+      wpnet:
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_PASSWORD=password
+      - WORDPRESS_DB_NAME=wordpressdb
+    ports:
+      - 80:80
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    networks:
+      wpnet:
+    ports:
+      - 8080:80
+
+networks:
+  wpnet:
+
+  
